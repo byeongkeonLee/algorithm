@@ -1,0 +1,74 @@
+#include<stdio.h>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int N,M;
+vector<int> arr[10001];
+vector<int> arr_back[10001];
+vector<int> candidate;
+vector<int> answer;
+int dp[10001];
+char visited[10001];
+char visited_back[10001];
+int dfs(int cur){
+	int sum = 0;
+	for(vector<int>::iterator itr = arr[cur].begin(); itr != arr[cur].end(); ++itr){
+		if(!visited[*itr] && dp[*itr] == -1){
+			visited[*itr] = 1;
+			sum += dfs(*itr);
+		}else{
+			sum += dp[*itr];
+		}
+	}
+	dp[cur] = sum+1;
+	return sum+1;
+}
+int dfs2(int cur){
+	for(vector<int>::iterator itr = arr_back[cur].begin(); itr != arr_back[cur].end(); ++itr){
+		if(!visited_back[*itr]){
+			visited_back[*itr] = 1;
+			answer.push_back(*itr);
+			dfs2(*itr);
+		}
+	}
+	return 0;
+}
+int main(){
+	scanf("%d %d",&N,&M);
+	int a,b;
+	for(int i=1;i<=N;i++){
+		dp[i] = -1;
+	}
+	for(int i=0;i<M;i++){
+		scanf("%d %d",&a,&b);
+		arr[b].push_back(a);
+		arr_back[a].push_back(b);
+	}
+	
+	for(int i=1;i<=N;i++){
+		if(!visited[i])
+			dfs(i);
+	}
+	for(int i=1; i<=N;i++){
+		printf("%d %d\n",i,dp[i]);
+	}
+	int max = -1;
+	for(int i=1;i<=N;i++)
+		if(max < dp[i]) max = dp[i];
+	for(int i=1;i<=N;i++)
+		if(max == dp[i]) candidate.push_back(i);
+
+	for(vector<int>::iterator itr = candidate.begin(); itr != candidate.end(); ++itr){
+		if(!visited_back[*itr]){
+			visited_back[*itr] = 1;
+			answer.push_back(*itr);
+			dfs2(*itr);
+		}
+	}	
+
+	sort(answer.begin(), answer.end());
+	for(vector<int>::iterator itr = answer.begin(); itr != answer.end(); ++itr){
+		printf("%d ",*itr);
+	}
+}
