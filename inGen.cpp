@@ -1,12 +1,16 @@
 #include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
 
 int main(){
-	int N = 200000/3;
+	int N = 15;
 
+	printf("%d\n",N);
 	for(int i=0; i<N; i++){
-		printf("%d %d\n",299999, 300000-i);
-		printf("%d %d\n",300001, 300000-i);
-		printf("%d %d\n",300000, 299999-i);
+		for(int j=0; j<50; j++){
+			printf("%c",rand()%10+'0');
+		}
+		printf("\n");
 	}
-
+	printf("97");
 }
