@@ -20,6 +20,6 @@ int main(){
         for(int i=1; i<N; i++){
                 ANS = (ANS+dp[i][K-1])%MOD;
         }
-        printf("%d\n",ANS);
+        printf("%d\n",ANS); 
 }
 

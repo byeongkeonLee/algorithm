@@ -1,12 +1,78 @@
-#include <iostream>
-#include <algorithm>
-#include <stack>
-#include <memory.h>
-#include <queue>
+#include<stdio.h>
+#include<vector>
+#include<algorithm>
+#include<math.h>
 using namespace std;
-int n;
-long long k;
-string s[16];
-long long v[16];
-long long pw10[51]; long long memo[1 << 16][101]; int sz[51]; long long dp(int bit, int num) { if(bit==(1<<n)-1){ return !num; } if(memo[bit][num]!=-1){ return memo[bit][num]; } memo[bit][num]=0; for(int i=0; i<n; i++){ if(!(bit&(1<<i))){ memo[bit][num]+=dp(bit|(1<<i), (num*pw10[sz[i]]+v[i])%k); } } return memo[bit][num]; } long long gcd(long long a, long long b) { return b==0 ? a : gcd(b, a%b); } int main() { ios::sync_with_stdio(false); cin.tie(0); cout.tie(0); cin >> n; memset(memo, -1, sizeof(memo)); for(int i=0; i<n; i++){ cin >> s[i]; sz[i]=s[i].size(); } cin >> k; for(int i=0; i<n; i++){ for(int j=0; j<sz[i]; j++){ v[i]=(v[i]*10+s[i][j]-'0')%k; } } pw10[0]=1%k; for(int i=1; i<=50; i++){ pw10[i]=(pw10[i-1]*10)%k; } long long a=dp(0, 0), b=1; for(int i=2; i<=n; i++){ b*=i; } long long g=gcd(a, b); cout << a/g << "/" << b/g << "\n"; return 0; }
 
+long N, L;
+
+
+class Polong{
+	public:
+		long x;
+		long y;
+		Polong(const Polong& a){
+			x = a.x;
+			y = a.y;
+		}
+		Polong(long x_, long y_): x(x_), y(y_){};
+};
+
+long CCW(Polong& a, Polong& b, Polong& c){
+	long x1 = b.x - a.x, x2 = c.x - b.x;
+	long y1 = b.y - a.y, y2 = c.y - b.y;
+	long val = 1LL*(y2*x1) - 1LL*(x2*y1);
+	if(val>0) return 1;
+	else if (val==0) return 0;
+	else return -1;
+}
+double length(long a, long b){
+	return  sqrt(1.0f*a*a+b*b);
+}
+double length(Polong& a, Polong& b){
+	long x = b.x-a.x, y= b.y-a.y;
+	return length(x,y);
+}
+double angle(Polong& a, Polong& b, Polong &c){
+	long x1 = b.x - a.x, x2 = c.x - b.x;
+	long y1 = b.y - a.y, y2 = c.y - b.y;
+	double ret = (1.0f*x1*x2+y1*y2)/length(x1,y1)/length(x2,y2);
+	return acos(ret);
+}
+vector<Polong> ptrs;
+vector<Polong> stack;
+bool cmpCCW(Polong& a, Polong& b){
+	long ret = CCW(ptrs[0], a, b);
+	if(ret != 0){
+		return ret>0;
+	}else{
+		return a.y == b.y? a.x < b.x: a.y < b.y;
+	}
+}
+
+int main(){
+	scanf("%ld",&N);
+	long a,b, mina=50001, minb=50001, idx=-1;
+	for(long i=0; i<N; i++){
+		scanf("%ld %ld",&a,&b);
+		ptrs.push_back(Polong(a,b));
+		if(b<minb || b==minb && a<mina){
+			minb = b;
+			mina = a;
+			idx = i;
+		}
+	}
+	ptrs[idx] = Polong(ptrs[0]);
+	ptrs[0] = Polong(mina, minb);
+	sort(ptrs.begin()+1, ptrs.end(), cmpCCW);
+
+	stack.push_back(ptrs[0]);
+	for(long i=1; i<ptrs.size(); i++){
+		while(stack.size()>1 && CCW(stack[stack.size()-2], stack[stack.size()-1], ptrs[i])<=0) stack.pop_back();
+		stack.push_back(ptrs[i]);
+	}
+
+	double ans = 0.0f;
+
+	printf("%ld",stack.size());
+}

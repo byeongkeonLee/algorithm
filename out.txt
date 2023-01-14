@@ -1,1 +1,11 @@
-690662973
+<3>[cur: 3, 5 push]
+<4><2><3>[cur: 3, 5 push]
+<4><5>[cur: 5, 6 push]
+[cur: 5, 7 push]
+<6>[cur: 6, 2 push]
+<7><2><4>[cur: 4, 5 push]
+<5>[cur: 5, 3 push]
+[cur: 5, 7 push]
+<3>[cur: 3, 1 push]
+<7>[cur: 7, 2 push]
+<1><2>3

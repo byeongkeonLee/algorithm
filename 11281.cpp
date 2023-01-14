@@ -40,28 +40,6 @@ int dfs(int cur){
 
 	return ret;
 }
-char visited2[10000];
-char finished2[10000];	
-int ans[10000];
-int path(int number, int node){
-	bool stop = false;
-	printf("[%d %d]\n",number,node);
-	for(auto itr = graph[node].begin(); itr != graph[node].end() && !stop; itr++){
-		int next_number = *itr%10000;
-		printf("[%d %d -> %d %d]\n",number, node, next_number, *itr);
-		if(finished2[next_number])
-			break;
-
-		if(!visited2[next_number]){
-			visited2[next_number] = 1;
-			if(path(next_number, *itr) == 0) stop = true;
-			visited2[next_number] = 0;
-		}else{
-			return 0;
-		}
-	}
-	return 1;
-}
 int main(){
 	int n,m;
 	scanf("%d %d",&n,&m);
@@ -75,16 +53,16 @@ int main(){
 		b = b<0? -b : 10000+b;
 		a--;
 		b--;
-		printf("<<%d %d>>\n",(a+10000)%20000,b);
-		printf("<<%d %d>>\n",(b+10000)%20000,a);
 		graph[(a+10000)%20000].push_back(b);
 		graph[(b+10000)%20000].push_back(a);
 	}
 
 	for(int i=0; i<n;i++){
-		if(!finished[i]){
+
+		if(!finished[10000+i])
+			dfs(10000+i);
+		if(!finished[i])
 			dfs(i);
-		}
 	}
 	for(int i=0; i<n;i++){
 		if(mapping[i] == mapping[10000+i]){
@@ -95,20 +73,11 @@ int main(){
 
 	printf("1\n");
 	for(int i=0; i<n;i++){
-		if(finished2[i]) continue;
-
-		visited2[i] = 1;
-		if(path(i, 10000+i)){
-			ans[i] = 1;
-		}else{
-			path(i, i);
-			ans[i] = 0;
-		}
-		finished2[i] = 1;
+		printf("[%d: %d %d]\n",i, mapping[i], mapping[10000+i]);
+		if(mapping[i] < mapping[10000+i])
+			printf("0 ");
+		else
+			printf("1 ");
 	}
-	for(int i=0; i<n; i++){
-		printf("%d ",ans[i]);
-	}
-	
 	return 0;
 }
