@@ -38,7 +38,7 @@ int main(){
 	int Ans = 0;
 	for(int i=1; i<=N; i++){
 		memset(visited, 0, 1001);
-		Ans += dfs(i)? 1:0;
+		Ans += dfs(i);
 	}
 	printf("%d\n",Ans);
 }
